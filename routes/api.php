@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\BasketsController;
 use App\Http\Controllers\BranchesController;
 use App\Http\Controllers\CategoriesController;
@@ -39,7 +40,9 @@ Route::post('/registration', [UsersController::class, 'registration']);
 
 
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::post('/indexForAdmin', [UsersController::class, 'indexForAdmin']);
+    Route::get('/user_for_admin', [AdminController::class, 'userForAdmin']);
+    Route::get('/order_for_admin', [AdminController::class, 'orderForAdmin']);
+    Route::get('/product_for_admin', [AdminController::class, 'productForAdmin']);
     Route::resource('user', UsersController::class);
     Route::resource('category', CategoriesController::class);
     Route::resource('sub_category', SubCategoriesController::class);

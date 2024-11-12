@@ -60,8 +60,8 @@ class CategoriesController extends Controller
         ]);
 
         $photoPath = null;
-        if ($request->hasFile('photo_url')) {
-            $photoPath = $request->file('photo_url')->store('category_photos', 'public');
+        if ($request->hasFile('photo')) {
+            $photoPath = $request->file('photo')->store('category_photos', 'public');
         }
         Category::create([
             "name" => $request->name,

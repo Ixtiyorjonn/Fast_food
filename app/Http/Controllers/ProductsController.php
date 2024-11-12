@@ -13,7 +13,7 @@ class ProductsController extends Controller
      */
     public function index()
     {
-        
+
         return Product::where('active', true)->get();
     }
 
@@ -30,27 +30,23 @@ class ProductsController extends Controller
      */
     public function store(Request $request)
     {
-        if (!$this->check('product', 'add')) 
-        {
+        if (!$this->check('product', 'add')) {
             return response()->json([
                 "message" => "sizda bunday huquq yo'q!"
             ]);
         }
 
 
-        Product::create
-        ([
-            'name' => $request->name,
-            'price' => $request->price,
-            'description' => $request->description,
-            'on_discount' => $request->on_discount,
-            'category_id' => $request->category_id,
-            'sub_category_id' => $request->sub_category_id,
-            'photo_url' => $request->photo_url,
-            'new' => $request->new,
-            'duration_time' => $request->duration_time,
-         ]);
-       
+        Product::create([
+                'name' => $request->name,
+                'price' => $request->price,
+                'description' => $request->description,
+                'on_discount' => $request->on_discount,
+                'category_id' => $request->category_id,
+                'photo_url' => $request->photo_url,
+                'new' => $request->new,
+                'duration_time' => $request->duration_time,
+            ]);
     }
 
     /**
@@ -74,8 +70,7 @@ class ProductsController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        if (!$this->check('product', 'update')) 
-        {
+        if (!$this->check('product', 'update')) {
             return response()->json([
                 "message" => "sizda bunday huquq yo'q!"
             ]);
@@ -87,8 +82,7 @@ class ProductsController extends Controller
      */
     public function destroy(Product $product)
     {
-        if (!$this->check('product', 'delete')) 
-        {
+        if (!$this->check('product', 'delete')) {
             return response()->json([
                 "message" => "sizda bunday huquq yo'q!"
             ]);
