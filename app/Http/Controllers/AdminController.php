@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
@@ -30,7 +31,7 @@ class AdminController extends Controller
             ->where('username', isset($username) ? "=" : "!=", $username)
             ->where('district_id', isset($district_id) ? "=" : "!=", $district_id)
             ->where('role_id', isset($role_id) ? "=" : "!=", $role_id)
-            ->where('active', true)
+            ->where('active', $request->active ? false : true)
             ->whereBetween('created_at', [$dateFrom, $dateTo])
             ->select(
                 'phone_number',
@@ -42,15 +43,15 @@ class AdminController extends Controller
             )
             ->get();
 
-            if (count($user)== 0) {
-                return response()->json([
-                    "message" => "bunday ma'lumot mavjud emas"
-                ]);
-            }else {
-                return response()->json([
-                    "message" => $user
-                ]);
-            }
+        if (count($user) == 0) {
+            return response()->json([
+                "message" => "bunday ma'lumot mavjud emas"
+            ]);
+        } else {
+            return response()->json([
+                "message" => $user
+            ]);
+        }
     }
 
     public function orderForAdmin()
@@ -77,15 +78,15 @@ class AdminController extends Controller
             ->with(["pay_type"])
             ->whereBetween('created_at', [$dateFrom, $dateTo])->get();
 
-            if (!count($order)) {
-                return response()->json([
-                    "message" => "bunday ma'lumot mavjud emas"
-                ]);
-            }else {
-                return response()->json([
-                    "message" => $order
-                ]);
-            }
+        if (!count($order)) {
+            return response()->json([
+                "message" => "bunday ma'lumot mavjud emas"
+            ]);
+        } else {
+            return response()->json([
+                "message" => $order
+            ]);
+        }
     }
 
 
@@ -113,14 +114,89 @@ class AdminController extends Controller
             ->where('duration_time', isset($duration_time) ? "=" : "!=", $duration_time)
             ->where('price', isset($price) ? "=" : "!=", $price)->get();
 
-            if (!count($product)) {
-                return response()->json([
-                    "message" => "bunday ma'lumot mavjud emas"
-                ]);
-            }else {
-                return response()->json([
-                    "message" => $product
-                ]);
+        if (!count($product)) {
+            return response()->json([
+                "message" => "bunday ma'lumot mavjud emas"
+            ]);
+        } else {
+            return response()->json([
+                "message" => $product
+            ]);
+        }
+    }
+
+
+
+    public function categoryForAdmin(Request $request)
+    {
+        $categories = Category::with(["child_category"])
+            ->where('active', true)
+            ->where("parent_id", null)
+            ->get();
+
+
+        $arr = [];
+        $this->recursiveFunction($categories, $arr);
+
+        // return $arr;
+
+        if (count($arr) == 0) {
+            return response()->json([
+                "data" => null,
+                "message" => "bunday ma'lumot mavjud emas"
+            ]);
+        } else {
+            return response()->json([
+                "data" => $arr,
+                "message" => ""
+            ]);
+        }
+    }
+    public function recursiveFunction($categories, &$arr)
+    {
+        foreach ($categories as $category) {
+            // If the category has no children, add it to the array
+            if ($category->child_category->isEmpty()) {
+                $arr[] = $category;
+            } else {
+                // Recursively call the function on child categories
+                $this->recursiveFunction($category->child_category, $arr);
             }
+        }
+    }
+
+    public function productForAdmin()
+    {
+
+        $name = request('name', null);
+        $id = request('id', null);
+        $price = request('price', null);
+        $description = request('description', null);
+        $on_discount = request('on_discount', null);
+        $category_id = request('category_id', null);
+        $photo_url = request('photo_url', null);
+        $new = request('new', null);
+        $duration_time = request('duration_time', null);
+
+        $product = Product::where('name', isset($name) ? "=" : "!=", $name)
+            ->where('price', isset($price) ? "=" : "!=", $price)
+            ->where('id', isset($id) ? "=" : "!=", $id)
+            ->where('description', isset($description) ? "=" : "!=", $description)
+            ->where('on_discount', isset($on_discount) ? "=" : "!=", $on_discount)
+            ->where('category_id', isset($category_id) ? "=" : "!=", $category_id)
+            ->where('photo_url', isset($photo_url) ? "=" : "!=", $photo_url)
+            ->where('new', isset($new) ? "=" : "!=", $new)
+            ->where('duration_time', isset($duration_time) ? "=" : "!=", $duration_time)
+            ->where('price', isset($price) ? "=" : "!=", $price)->get();
+
+        if (!count($product)) {
+            return response()->json([
+                "message" => "bunday ma'lumot mavjud emas"
+            ]);
+        } else {
+            return response()->json([
+                "message" => $product
+            ]);
+        }
     }
 }

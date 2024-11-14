@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Branch;
 use App\Models\Branches;
 use Illuminate\Http\Request;
 
@@ -12,7 +13,7 @@ class BranchesController extends Controller
      */
     public function index()
     {
-        //
+        return Branch::select('branch', 'start_time', 'end_time')->get();
     }
 
     /**
@@ -28,13 +29,30 @@ class BranchesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        if (!$this->check("branch", "add")) {
+            return response()->json([
+                "message" => "sizda bunday huquq yo'q!"
+            ]);
+        }
+
+        Branch::create([
+            "branch" => $request->branch,
+            "start_time" => $request->start_time,
+            "end_time" => $request->end_time,
+            "district_id" => $request->district_id,
+            "region_id" => $request->region_id,
+            "adress" => $request->adress,
+        ]);
+
+        return response()->json([
+            "message" => "filial muvaffaqqiyatli yaratildi!"
+        ]);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Branches $branches)
+    public function show(Branch $branch)
     {
         //
     }
@@ -42,7 +60,7 @@ class BranchesController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Branches $branches)
+    public function edit(Branch $branch)
     {
         //
     }
@@ -50,15 +68,32 @@ class BranchesController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Branches $branches)
+    public function update(Request $request, Branch $branch)
     {
-        //
+        if (!$this->check("branch", "update")) {
+            return response()->json([
+                "message" => "sizda bunday huquq yo'q!"
+            ]);
+        }
+
+        $branch->update([
+            "branch" => $request->branch,
+            "start_time" => $request->start_time,
+            "end_time" => $request->end_time,
+            "district_id" => $request->district_id,
+            "region_id" => $request->region_id,
+            "adress" => $request->adress,
+        ]);
+
+        return response()->json([
+            "message" => "filial muvaffaqqiyatli o'zgartirildi!"
+        ]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Branches $branches)
+    public function destroy(Branch $branch)
     {
         //
     }

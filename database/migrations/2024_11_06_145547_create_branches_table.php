@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('branches', function (Blueprint $table) {
             $table->id();
-            $table->string('branches'); 
+            $table->string('branch'); 
             $table->float('start_time'); 
             $table->float('end_time'); 
             $table->foreignId('region_id')->constrained(); 

@@ -12,7 +12,8 @@ class DiscountsController extends Controller
      */
     public function index()
     {
-        //
+        return Discount::with(['product'])->select('product_id', 'amount', 'start_time', 'end_time',
+                                                 'created_at as yaratilgan vaqti')->get();
     }
 
     /**
@@ -28,7 +29,23 @@ class DiscountsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        if (!$this->check("discount", "add")) 
+        {
+            return response()->json([
+                "message" => "sizda bunday huquq yo'q!"
+            ]);
+        }
+
+        Discount::create([
+            "product_id" => $request->product_id,
+            "amount" => $request->amount,
+            "start_time" => $request->start_time,
+            "end_time" => $request->end_time,
+        ]);
+
+        return response()->json([
+            "message" => "chegirma muvaffaqqiyatli yaratildi!"
+        ]);
     }
 
     /**
@@ -52,7 +69,23 @@ class DiscountsController extends Controller
      */
     public function update(Request $request, Discount $discount)
     {
-        //
+        if (!$this->check("discount", "update")) 
+        {
+            return response()->json([
+                "message" => "sizda bunday huquq yo'q!"
+            ]);
+        }
+
+        $discount->update([
+            "product_id" => $request->product_id,
+            "amount" => $request->amount,
+            "start_time" => $request->start_time,
+            "end_time" => $request->end_time,
+        ]);
+
+        return response()->json([
+            "message" => "chegirma muvaffaqqiyatli o'zgartirildi!"
+        ]);
     }
 
     /**
@@ -60,6 +93,15 @@ class DiscountsController extends Controller
      */
     public function destroy(Discount $discount)
     {
-        //
+        if (!$this->check("discount", "delete")) {
+            return response()->json([
+                "message" => "sizda bunday huquq yo'q"
+            ]);
+        }
+        $discount->delete();
+        
+        return response()->json([
+            "message" => "chegirma muvaffaqqiyatli o'chirildi!"
+        ]);
     }
 }

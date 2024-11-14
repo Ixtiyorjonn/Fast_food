@@ -43,6 +43,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/user_for_admin', [AdminController::class, 'userForAdmin']);
     Route::get('/order_for_admin', [AdminController::class, 'orderForAdmin']);
     Route::get('/product_for_admin', [AdminController::class, 'productForAdmin']);
+    Route::get('/category_for_admin', [AdminController::class, 'categoryForAdmin']);
     Route::resource('user', UsersController::class);
     Route::resource('category', CategoriesController::class);
     Route::resource('sub_category', SubCategoriesController::class);
